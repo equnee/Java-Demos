@@ -8,9 +8,13 @@ import java.sql.*;
 
 public class TestAtm {
 
-    // ————————————————————————————————————————————————————————————————————————
-    //    以下方法为纯粹的JDBC读写数据库操作，没有任何逻辑
-    // ————————————————————————————————————————————————————————————————————————
+    /* ————————————————————————————————————————————————————————————————————————
+     *    以下方法为纯粹的JDBC读写数据库操作，没有任何逻辑
+     *     * 对于atm表格中，单条记录的：新增，修改，删除，查询
+     *       - 新增、修改、删除 ——> 代码几乎一致（只差一条sql语句）——> 优化
+     *       - 查询 ——> 与别的类查询几乎一致（参数不同）
+     *     * 框架：Mybatis / Hibernate持久层 —— 专门负责读写数据库（DAO）
+     * ———————————————————————————————————————————————————————————————————————— */
 
     /* delete: 负责将某行记录从数据库删除
      */
@@ -21,7 +25,6 @@ public class TestAtm {
         String password = "rootroot";
         Connection conn = null;
         Statement stat = null;
-        ResultSet rs = null;
         String sql = "DELETE FROM atm WHERE aname ='" + aname +"'";
         try {
             Class.forName(className);
@@ -45,13 +48,6 @@ public class TestAtm {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            try {
-                if(rs!=null) {
-                    rs.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -65,7 +61,6 @@ public class TestAtm {
         String sql = "INSERT INTO atm VALUES('" + atm.getAname() +"','" + atm.getApassword() + "'," + atm.getAbalance() +")";
         Connection conn = null;
         Statement stat = null;
-        ResultSet rs = null;
         try {
             Class.forName(className);
             conn = DriverManager.getConnection(url, user, password);
@@ -88,13 +83,6 @@ public class TestAtm {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            try {
-                if(rs!=null) {
-                    rs.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -110,7 +98,6 @@ public class TestAtm {
         String password = "rootroot";
         Connection conn = null;
         Statement stat = null;
-        ResultSet rs = null;
         String sql = "UPDATE atm SET apassword = '" + atm.getApassword() + "', abalance = '" + atm.getAbalance() + "' WHERE aname ='" + atm.getAname() + "'";
         try {
             Class.forName(className);
@@ -132,13 +119,6 @@ public class TestAtm {
             try {
                 if(stat!=null){
                     stat.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            try {
-                if(rs!=null) {
-                    rs.close();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
