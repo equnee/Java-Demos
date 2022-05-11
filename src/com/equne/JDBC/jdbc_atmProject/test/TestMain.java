@@ -1,13 +1,13 @@
-package com.equne.JDBC.jdbc_atmProject;
+package com.equne.JDBC.jdbc_atmProject.test;
 
-import com.equne.JDBC.jdbc_atmProject.test.TestAtm;
+import com.equne.JDBC.jdbc_atmProject.Service.AtmService;
 
 import java.util.Scanner;
 
 public class TestMain {
     public static void main(String[] args){
         Scanner input = new Scanner(System.in);
-        TestAtm ta = new TestAtm();
+        AtmService ta = new AtmService();
         System.out.println("请输入用户名");
         String aname = input.nextLine();
         System.out.println("请输入密码");
@@ -61,8 +61,7 @@ public class TestMain {
                     case "6":  // 6. 销户
                         System.out.println("请输入销户账户名：");
                         String cancelName = input.nextLine();
-                        ta.delete(cancelName);
-                        System.out.println("已成功删除该账户！");
+                        ta.cancelBank(cancelName);
                         break;
                     default:
                         System.out.println("请输入正确序号！");
