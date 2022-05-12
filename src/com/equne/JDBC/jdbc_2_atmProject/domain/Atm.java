@@ -1,4 +1,4 @@
-package com.equne.JDBC.jdbc_atmProject.domain;
+package com.equne.JDBC.jdbc_2_atmProject.domain;
 
 public class Atm {
 

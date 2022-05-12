@@ -1,7 +1,7 @@
-package com.equne.JDBC.jdbc_atmProject.Service;
+package com.equne.JDBC.jdbc_2_atmProject.Service;
 
-import com.equne.JDBC.jdbc_atmProject.Dao.AtmDao;
-import com.equne.JDBC.jdbc_atmProject.domain.Atm;
+import com.equne.JDBC.jdbc_2_atmProject.Dao.AtmDao;
+import com.equne.JDBC.jdbc_2_atmProject.domain.Atm;
 
 public class AtmService {
 

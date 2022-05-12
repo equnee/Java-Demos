@@ -1,11 +1,7 @@
 /* abstract: 该文件为本项目最初版本，现两部分代码分别分层为：Dao目录中的AtmDao，与Service中的AtmService。
  * date: 2022-05-09
  *  */
-package com.equne.JDBC.jdbc_atmProject.test;
-
-import com.equne.JDBC.jdbc_atmProject.domain.Atm;
-
-import java.sql.*;
+package com.equne.JDBC.jdbc_2_atmProject.test;
 
 public class TestAtm {
 

@@ -1,6 +1,6 @@
-package com.equne.JDBC.jdbc_atmProject.Dao;
+package com.equne.JDBC.jdbc_2_atmProject.Dao;
 
-import com.equne.JDBC.jdbc_atmProject.domain.Atm;
+import com.equne.JDBC.jdbc_2_atmProject.domain.Atm;
 
 import java.sql.*;
 
@@ -135,15 +135,16 @@ public class AtmDao {
         String url = "jdbc:mysql://localhost:3306/atm";
         String user = "root";
         String password = "rootroot";
-        String sql = "SELECT aname, apassword, abalance FROM atm WHERE aname = '" + aname + "'";
+        String sql = "SELECT aname, apassword, abalance FROM atm WHERE aname = ?";
         Connection conn = null;
-        Statement stat = null;
+        PreparedStatement pstat = null;
         ResultSet rs = null;
         try {
             Class.forName(className);
             conn = DriverManager.getConnection(url, user, password);
-            stat = conn.createStatement();
-            rs = stat.executeQuery(sql);
+            pstat = conn.prepareStatement(sql);
+            pstat.setString(1, aname);
+            rs = pstat.executeQuery();
             if (rs.next()) {
                 atm = new Atm(); // 懒加载机制
                 atm.setAname(rs.getString("aname"));
@@ -164,8 +165,8 @@ public class AtmDao {
                 e.printStackTrace();
             }
             try {
-                if(stat!=null){
-                    stat.close();
+                if(pstat!=null){
+                    pstat.close();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

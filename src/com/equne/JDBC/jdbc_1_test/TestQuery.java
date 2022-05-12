@@ -1,7 +1,7 @@
 /* abstract: JDBC连接数据库：读操作（接收返回值）
  *  date: 2022-5-8
  *  mysql: 8.0.29  */
-package com.equne.JDBC.jdbc_test;
+package com.equne.JDBC.jdbc_1_test;
 
 import java.sql.*;
 

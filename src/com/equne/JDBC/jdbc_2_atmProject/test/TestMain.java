@@ -1,6 +1,6 @@
-package com.equne.JDBC.jdbc_atmProject.test;
+package com.equne.JDBC.jdbc_2_atmProject.test;
 
-import com.equne.JDBC.jdbc_atmProject.Service.AtmService;
+import com.equne.JDBC.jdbc_2_atmProject.Service.AtmService;
 
 import java.util.Scanner;
 
