@@ -10,7 +10,8 @@ public class Emp {
     private Date hiredate;
     private Float sal;
     private Float comm;
-    private Integer deptno;
+    // private Integer deptno; ——> 外键，改为一个对象，聚合在当前对象内作为属性值。
+    private Dept dept;
 
     public Emp() {
     }
@@ -32,12 +33,12 @@ public class Emp {
         builder.append(",");
         builder.append(this.comm);
         builder.append(",");
-        builder.append(this.deptno);
+        builder.append(this.dept);
         builder.append("}");
         return new String(builder);
     }
 
-    public Emp(Integer empno, String ename, String job, Integer mgr, Date hiredate, Float sal, Float comm, Integer deptno) {
+    public Emp(Integer empno, String ename, String job, Integer mgr, Date hiredate, Float sal, Float comm, Dept dept) {
         this.empno = empno;
         this.ename = ename;
         this.job = job;
@@ -45,7 +46,7 @@ public class Emp {
         this.hiredate = hiredate;
         this.sal = sal;
         this.comm = comm;
-        this.deptno = deptno;
+        this.dept = dept;
     }
 
     public Integer getEmpno() {
@@ -104,11 +105,11 @@ public class Emp {
         this.comm = comm;
     }
 
-    public Integer getDeptno() {
-        return deptno;
+    public Dept getDept() {
+        return dept;
     }
 
-    public void setDeptno(Integer deptno) {
-        this.deptno = deptno;
+    public void setDept(Dept depo) {
+        this.dept = dept;
     }
 }
