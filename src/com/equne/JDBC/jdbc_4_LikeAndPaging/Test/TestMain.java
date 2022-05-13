@@ -34,11 +34,11 @@ public class TestMain {
 //        }
 
         // 5. 测试-查询计算字段
-        ArrayList<HashMap<String, Object>> list = dao.selectCountByGroup();
-        // 遍历结果
-        for(HashMap<String, Object> map:list){
-            System.out.println("{" + map.get("deptno") + "," + map.get("ct") + "}");
-        }
+//        ArrayList<HashMap<String, Object>> list = dao.selectCountByGroup();
+//        // 遍历结果
+//        for(HashMap<String, Object> map:list){
+//            System.out.println("{" + map.get("deptno") + "," + map.get("ct") + "}");
+//        }
 
     }
 }

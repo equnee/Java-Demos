@@ -19,7 +19,7 @@ public class EmpService {
 //        // 1. 负责将page计算成rowIndex。 （page==1 rowIndex==0； page==2 rowIndex==5； page==3  rowIndex==10）
 //        int rowIndex = (page-1)*5;
 //        // 2. 调用dao查找数据。
-//        ArrayList list = dao.selectByPaging(rowIndex);
+//        ArrayList list = dao.selectSalDescByPaging(rowIndex);
 //        // 3. dao方法的返回值作为方法的结果交给用户。
 //        return list;
 //        // 以上3行代码同：
