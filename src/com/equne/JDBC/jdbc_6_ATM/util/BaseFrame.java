@@ -18,7 +18,7 @@ public abstract class BaseFrame extends JFrame {
         this.setFontAndSoOn();
         this.addElements();
         this.addListener();
-        this.setFramSelf();
+        this.setFrameSelf();
     }
 
     /* 设计了一个通用的画图方法：提供图片路径及宽高
@@ -49,5 +49,5 @@ public abstract class BaseFrame extends JFrame {
     // 3. 用来添加事件监听器
     protected abstract void addListener();
     // 4. 设置窗体自身的属性
-    protected abstract void setFramSelf();
+    protected abstract void setFrameSelf();
 }

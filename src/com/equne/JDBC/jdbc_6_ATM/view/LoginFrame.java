@@ -1,22 +1,37 @@
 package com.equne.JDBC.jdbc_6_ATM.view;
 
+import com.equne.JDBC.jdbc_6_ATM.service.AtmService;
 import com.equne.JDBC.jdbc_6_ATM.util.BaseFrame;
+import com.equne.JDBC.jdbc_6_ATM.util.MySpring;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+@SuppressWarnings("all")
 public class LoginFrame extends BaseFrame {
 
-    // 构造方法
-    public LoginFrame(){
+    // 构造方法 —— 单例模式
+    private LoginFrame(){
+        super("登录窗口");
         this.init();
-    };
-    public LoginFrame(String title){
-        super(title);
-        this.init(); // 规定启动流程
-    };
+    }
+    private static LoginFrame loginFrame;
+    public static LoginFrame getLoginFrame(){
+        if(loginFrame == null){
+            loginFrame = new LoginFrame();
+        }
+        return loginFrame;
+    }
+
+//    public LoginFrame(){
+//        this.init();
+//    };
+//    public LoginFrame(String title){
+//        super(title);
+//        this.init(); // 规定启动流程
+//    };
 
 
     // 添加一些属性：登录窗口上的各种属性
@@ -30,6 +45,8 @@ public class LoginFrame extends BaseFrame {
     private JButton loginButton = new JButton("登 录");
     private JButton registButton = new JButton("注 册");
 
+    // 添加一个控制注册窗口的属性
+    private RegistFrame registFrame = null;
 
     protected void setFontAndSoOn() {
         mainPanel.setLayout(null); // 设置panel布局为自定义
@@ -74,20 +91,44 @@ public class LoginFrame extends BaseFrame {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                // 1. 获取账号密码
+                String aname = accountField.getText();
+                String apassword = new String(passwordField.getPassword());
+                // 2. 调用登录方法
+                AtmService service = MySpring.getBean("com.equne.JDBC.jdbc_6_ATM.service.AtmService");
+                String result = service.login(aname, apassword);
+                if(result.equals("登录成功")){
+                    LoginFrame.this.setVisible(false);
+                    AtmFrame.getAtmFrame(aname); // 用于登录成功后传递信息
+                } else {
+                    JOptionPane.showMessageDialog(LoginFrame.this, "对不起，" + result);
+                    accountField.setText("");
+                    passwordField.setText("");
+                }
             }
         });
         registButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                /* ⚠️：由于使用单例模式来创建registFrame对象，从注册窗口返回后，无法点击注册再次创建新对象，因此使用隐藏窗口的方式，始终使用同一个registFrame对象，无需创建新对象。
+                     1. 创建一个registFram属性，在登录窗口中判断：
+                     2. 当首次点击注册：registFram属性为空，此时首次创建registFrame对象，弹出一个新的注册窗口，隐藏登录窗口。
+                     3. 在注册窗口中点击关闭：隐藏注册窗口（并清空输入框以便下次使用），打开隐藏的登录窗口。
+                     4. 当再次点击注册：registFram属性不为空，此时已创建过对象，弹出已使用过的隐藏的注册窗口...
+                 */
+                LoginFrame.this.setVisible(false); // 隐藏登录窗口
+                if(registFrame ==null){
+                    registFrame = RegistFrame.getRegistFram(); // new新的注册窗口
+                } else{
+                    registFrame.setVisible(true);
+                }
             }
         });
     }
 
-    protected void setFramSelf() {
+    protected void setFrameSelf() {
         this.setBounds(400, 200, 500, 300); // 距离屏幕、自身大小500x300
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 退出时关闭
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 点击关闭时，直接退出系统
         this.setResizable(false); // 固定大小，不可拖拽
         this.setVisible(true); // 最终展示
     }
