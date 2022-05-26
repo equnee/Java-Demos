@@ -140,12 +140,14 @@ public class RegistFrame extends BaseFrame {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                RegistFrame.this.setVisible(false);
+                loginFrame.setVisible(true); // 显示登录窗口
+                loginFrame.reset(); // 清空输入框内容
             }
         });
     }
     // 自定义方法封装冗余代码：清空所有输入框内容
-    private void reset(){
+    void reset(){
         accountField.setText("");
         passwordField.setText("");
         balanceFiled.setText("");

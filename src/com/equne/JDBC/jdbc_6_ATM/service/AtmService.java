@@ -14,7 +14,7 @@ public class AtmService {
 
 
     /*
-          登录方法
+         登录方法
      */
     public String login(String aname, String apassword){
         Atm atm = dao.selectOne(aname);
@@ -48,4 +48,52 @@ public class AtmService {
         }
         return false; // 账号不存在，未注册
     }
+
+    /*
+        存款
+     */
+    public int deposit(String aname, Float depositAmount){
+        Atm atm = dao.selectOne(aname);
+        atm.setAbalance(atm.getAbalance() + depositAmount);
+        return dao.update(atm);
+    }
+
+
+    /*
+        取款
+     */
+    public int withdraw(String aname, Float withdrawalAmount){
+        Atm atm = dao.selectOne(aname);
+        if(atm.getAbalance()>=withdrawalAmount){
+            atm.setAbalance(atm.getAbalance() - withdrawalAmount);
+            return dao.update(atm); // 成功更新1行返回1，未更新返回0
+        }else{
+            return -1;
+        }
+
+    }
+
+    /*
+        转账
+     */
+    public int transfer(String outName, String inName, Float transferAmount){
+        int count = 0;
+        Atm outAtm = dao.selectOne(outName);
+        Atm inAtm = dao.selectOne(inName);
+        if(outAtm.getAbalance() >= transferAmount){
+            outAtm.setAbalance(outAtm.getAbalance() - transferAmount);
+            inAtm.setAbalance(inAtm.getAbalance() + transferAmount);
+            return dao.update(outAtm) + dao.update(inAtm); // 2成功
+        } else {
+            return -1; // 余额不足
+        }
+    }
+
+    /*
+        销户
+     */
+    public int cancelAccount(String aname){
+        return dao.delete(aname);
+    }
+
 }

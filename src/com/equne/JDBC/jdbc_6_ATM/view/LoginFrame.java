@@ -121,9 +121,17 @@ public class LoginFrame extends BaseFrame {
                     registFrame = RegistFrame.getRegistFram(); // new新的注册窗口
                 } else{
                     registFrame.setVisible(true);
+                    registFrame.reset();
                 }
             }
         });
+    }
+
+    // 自定义一个方法：设置所有的输入框清空
+    // 默认修饰符：本包中使用
+     void reset(){
+        accountField.setText("");
+        passwordField.setText("");
     }
 
     protected void setFrameSelf() {

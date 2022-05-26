@@ -18,7 +18,7 @@ public class AtmDao {
     String password = "1234";
 
     /*
-        方法：负责查询一行记录
+        方法：查询一行记录
         * 参数：aname
         * 返回值：Atm对象
      */
@@ -50,7 +50,7 @@ public class AtmDao {
 
 
     /*
-           新增一行记录
+           方法：新增一行记录
      */
     public int insert(Atm atm){
         int count = 0; // 数据库更新的行数 == 1
@@ -72,5 +72,49 @@ public class AtmDao {
         return count;
     }
 
+    /*
+        方法：更新一行记录
+     */
+    public int update(Atm atm){
+        int count = 0; // 记录更改的行数
+        String sql = "UPDATE atm SET apassword = ?, abalance = ? WHERE aname = ?";
 
+        try {
+            Class.forName(driver);
+            Connection conn = DriverManager.getConnection(url, user, password);
+            PreparedStatement pstat = conn.prepareStatement(sql);
+            pstat.setString(1, atm.getApassword());
+            pstat.setFloat(2, atm.getAbalance());
+            pstat.setString(3, atm.getAname());
+            count = pstat.executeUpdate();
+            conn.close();
+            pstat.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+
+
+    /*
+         删除一条记录
+     */
+    public int delete(String aname) {
+        int count = 0;
+        String sql = "DELETE FROM atm WHERE aname = ?";
+        try{
+            Class.forName(driver);
+            Connection conn = DriverManager.getConnection(url, user, password);
+            PreparedStatement pstat = conn.prepareStatement(sql);
+            pstat.setString(1, aname);
+            count = pstat.executeUpdate();
+            conn.close();
+            pstat.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return count;
+    }
 }

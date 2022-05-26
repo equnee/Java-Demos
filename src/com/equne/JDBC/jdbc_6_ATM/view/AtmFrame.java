@@ -6,6 +6,8 @@ import com.equne.JDBC.jdbc_6_ATM.util.MySpring;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class AtmFrame extends BaseFrame {
 
@@ -37,7 +39,7 @@ public class AtmFrame extends BaseFrame {
     private JLabel balanceLabelEN = new JLabel();
     private JLabel selectServerLabelCN = new JLabel("您好！请选择所需服务");
     private JLabel selectServerLabelEN = new JLabel("Please Select Service");
-    private JButton messageButton = new JButton("个人信息");
+    private JButton cancelBankButton = new JButton("销户");
     private JButton exitButton = new JButton("退出");
     private JButton depositButton = new JButton("存款");
     private JButton withdrawalButton = new JButton("取款");
@@ -54,7 +56,7 @@ public class AtmFrame extends BaseFrame {
         balanceLabelCN.setBounds(250,200,300,40);
         balanceLabelCN.setFont(new Font("宋体", Font.BOLD, 24));
         balanceLabelCN.setHorizontalAlignment(JTextField.CENTER);
-        balanceLabelCN.setText("用户余额：¥" + service.check(aname));
+        balanceLabelCN.setText("账户余额：¥" + service.check(aname));
         balanceLabelEN.setBounds(250,240,300,40);
         balanceLabelEN.setFont(new Font("宋体", Font.BOLD, 22));
         balanceLabelEN.setHorizontalAlignment(JTextField.CENTER);
@@ -65,10 +67,10 @@ public class AtmFrame extends BaseFrame {
         selectServerLabelEN.setBounds(320,400,300,40);
         selectServerLabelEN.setFont(new Font("宋体", Font.PLAIN, 16));
 
-        messageButton.setBounds(10,150,120,40);
-        messageButton.setFont(new Font("宋体", Font.BOLD, 14));
-        messageButton.setBackground(Color.LIGHT_GRAY);
-        messageButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        cancelBankButton.setBounds(10,150,120,40);
+        cancelBankButton.setFont(new Font("宋体", Font.BOLD, 14));
+        cancelBankButton.setBackground(Color.LIGHT_GRAY);
+        cancelBankButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         exitButton.setBounds(10,390,120,40);
         exitButton.setFont(new Font("宋体", Font.BOLD, 14));
@@ -100,7 +102,7 @@ public class AtmFrame extends BaseFrame {
         mainPanel.add(balanceLabelEN);
         mainPanel.add(selectServerLabelCN);
         mainPanel.add(selectServerLabelEN);
-        mainPanel.add(messageButton);
+        mainPanel.add(cancelBankButton);
         mainPanel.add(exitButton);
         mainPanel.add(depositButton);
         mainPanel.add(withdrawalButton);
@@ -111,6 +113,122 @@ public class AtmFrame extends BaseFrame {
 
 
     protected void addListener() {
+        // 销户按钮
+        cancelBankButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int value = JOptionPane.showConfirmDialog(AtmFrame.this, "是否确认销户？");
+                if(value == 0){
+                    service.cancelAccount(aname);
+                    JOptionPane.showMessageDialog(AtmFrame.this, "销户成功！");
+                    AtmFrame.this.setVisible(false);
+                    LoginFrame.getLoginFrame().setVisible(true);
+                    LoginFrame.getLoginFrame().reset();
+                } else {
+                    JOptionPane.showMessageDialog(AtmFrame.this, "销户失败！");
+                }
+            }
+        });
+
+        // 退出按钮
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int value = JOptionPane.showConfirmDialog(AtmFrame.this,"是否确认退出系统？");
+                if(value == 0){ // 0-是  1-否  2-取消
+                    System.exit(0); // 直接让系统中断
+                }
+            }
+        });
+
+        // 存款按钮
+        depositButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    String value = JOptionPane.showInputDialog("请输入存款金额：");
+                    if(value!=null && !"".equals(value)){ // value.equals("")有可能会引起空指针异常，而空字串为正常的字符串常量。
+                        Float depositAmount = Float.valueOf(value);
+                        if(depositAmount <= 0){
+                            throw new NumberFormatException();
+                        }
+                        int count = service.deposit(aname, depositAmount); // 更新成功时返回1
+                        if(count == 1){
+                            JOptionPane.showMessageDialog(AtmFrame.this, "存款成功");
+                            balanceLabelCN.setText("账户余额：¥" + service.check(aname));
+                            balanceLabelEN.setText("Account Balance：¥" + service.check(aname));
+                        }else{
+                            JOptionPane.showMessageDialog(AtmFrame.this, "存款失败");
+                        }
+                    }
+                }catch (NumberFormatException nfe){
+                    JOptionPane.showMessageDialog(AtmFrame.this, "对不起，输入金额有误。");
+                }
+            }
+
+        });
+
+        // 取款按钮
+        withdrawalButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    String value = JOptionPane.showInputDialog(AtmFrame.this,"请输入取款金额：");
+                    if(value!=null && !"".equals(value)){
+                        Float withdrawalAmount = Float.valueOf(value);
+                        if(withdrawalAmount <= 0){
+                            throw new NumberFormatException();
+                        }
+                        int count = service.withdraw(aname, withdrawalAmount); // 更新成功时返回1，余额不足时返回-1
+                        if(count == 1){
+                            JOptionPane.showMessageDialog(AtmFrame.this, "取款成功。");
+                            balanceLabelCN.setText("账户余额：¥" + service.check(aname));
+                            balanceLabelEN.setText("Account Balance：¥" + service.check(aname));
+                        } else if(count == -1){
+                            JOptionPane.showMessageDialog(AtmFrame.this, "对不起，余额不足。");
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(AtmFrame.this, "取款失败。");
+                        }
+                    }
+                } catch (NumberFormatException nfe){
+                    JOptionPane.showMessageDialog(AtmFrame.this, "对不起，输入的金额有误。");
+                }
+            }
+        });
+
+        // 转账按钮
+        transferButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    String name = JOptionPane.showInputDialog(AtmFrame.this,"请输入收款账户：");
+                    if(name!=null && !"".equals(name) && service.isExist(name)){
+                        String value = JOptionPane.showInputDialog(AtmFrame.this,"请输入转账金额：");
+                        if(value!=null && !"".equals(value)){
+                            Float transferAmount = Float.valueOf(value);
+                            if(transferAmount <= 0){
+                                throw new NumberFormatException();
+                            }
+                            int count = service.transfer(aname, name, transferAmount); // 更新成功时返回1，余额不足时返回-1
+                            if(count == 2){
+                                JOptionPane.showMessageDialog(AtmFrame.this, "转账成功。");
+                                balanceLabelCN.setText("账户余额：¥" + service.check(aname));
+                                balanceLabelEN.setText("Account Balance：¥" + service.check(aname));
+                            } else if(count == -1){
+                                JOptionPane.showMessageDialog(AtmFrame.this, "对不起，您的余额不足。");
+                            } else {
+                                JOptionPane.showMessageDialog(AtmFrame.this, "转账失败。");
+                            }
+                        }
+                    } else{
+                        JOptionPane.showMessageDialog(AtmFrame.this, "对不起，输入的账户有误。");
+                    }
+                } catch (NumberFormatException nfe){
+                    JOptionPane.showMessageDialog(AtmFrame.this, "对不起，输入的金额有误。");
+                }
+            }
+        });
 
     }
 
