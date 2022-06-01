@@ -10,10 +10,10 @@ import java.sql.SQLException;
  */
 public class MyConnection {
 
-    private static String className = "com.mysql.cj.jdbc.Driver"; // 配置文件 properties
-    private static String url = "jdbc:mysql://localhost:3306/atm";
-    private static String user = "equne";
-    private static String password = "1234";
+    private static String className; // 配置文件 properties
+    private static String url;
+    private static String user;
+    private static String password;
 
 
     // 连接
@@ -23,8 +23,14 @@ public class MyConnection {
 
 
     // 一个静态块：为了加载类时只执行一次
-    {
+    static {
         try {
+            // 赋值
+            className = ConfigReader.getPropertyValue("className");
+            url = ConfigReader.getPropertyValue("url");
+            user = ConfigReader.getPropertyValue("user");
+            password = ConfigReader.getPropertyValue("password");
+
             Class.forName(className);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
