@@ -11,6 +11,39 @@ public class TestMain {
 
     public static void main(String[] args) throws Exception{
 
+        /*  表面上没有变，实际上底层机制变了：
+         1 创建时间快
+         2 无线程安全问题
+         3 未连接排队等待机制
+         4 连接参数信息可修改 */
+
+        /*
+            至此使用了至少三种设计模式：单例模式 / 静态代理模式 / 缺省适配器模式
+               另外，读取文件：缓存机制，配置文件 / 线程安全问题等待问题
+         */
+
+        // 以下DAO层方法一样，代码冗余问题待解决，今后封装到只剩一条SQL语句，让所有JDBC流程都发生变化，让动态代理干活。
+        //         （我们写DAO，DAO加上注解写SQL语句，动态代理让它读取DAO上的语句，找到真实类去创建JDBC：底层从连接池中获取连接。框架：封装连接池和ORM框架——> jar包。今后只需要写一个方法，定义一个注解，写一个SQL就可以干活了。）
+
+        // 利用连接池的JDBC六部曲 几乎没有变化
+        // 1. 导包
+        // 2. 加载连接池对象（⚠️：需要配置一个文件，写连接的参数信息） <—— 只有此处不同
+        ConnectionPool pool = ConnectionPool.getInstance();
+        // 3. 获取连接
+        Connection conn = pool.getConnection();
+        // 4. 状态参数
+        PreparedStatement pstat = conn.prepareStatement("");
+        // 5. 执行操作
+        ResultSet rs = pstat.executeQuery();
+        // 6. 关闭资源
+        rs.close();
+        pstat.close();
+        conn.close();
+
+
+
+
+        // ————————————————————————————————————————
         // 模拟一个测试
         TestThread tt1 = new TestThread();
         TestThread tt2 = new TestThread();
@@ -27,11 +60,8 @@ public class TestMain {
 
 
 
-
-
-
-
         // ————————————————————————————————————————
+        // 最初的使用方法：
 
 //        // 1. 导包
 //        // 2. 加载连接池对象

@@ -13,16 +13,15 @@ public class TestThread extends Thread{
     public void run(){
         // 获取一个连接，把持一会儿不释放
         ConnectionPool pool = ConnectionPool.getInstance();
-        MyConnection mc = pool.getMC();
-        Connection conn = mc.getConn();
+        Connection conn = pool.getConnection();
         // conn 是用户获取到的连接 可以拿去使用
         System.out.println(conn);
         try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
+            Thread.sleep(3000);
+            conn.close(); // 释放
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        // mc.setUsed(false); // 释放
     }
 
 }

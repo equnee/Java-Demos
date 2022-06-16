@@ -38,6 +38,7 @@ public class ConnectionPool {
 
     // 属性 —— 最小连接个数
     private int minConnectCount = Integer.parseInt(ConfigReader.getPropertyValue("minConnectCount"));
+    private int waitTime = Integer.parseInt(ConfigReader.getPropertyValue("waitTime"));
 
     // 属性 —— 大池子  list（遍历方便）
     // - 两个连接：1.Conn 2.MyConn(✅）
@@ -55,9 +56,10 @@ public class ConnectionPool {
     // 方法 —— 获取连接，返回值: 1.Conn 2.MyConn(✅)
     // 从用户使用的角度来看：1和2都行
     // 用户需要操作状态，用户使用完后不能关闭，需要切换状态，释放连接。：2
-    public synchronized MyConnection getMC(){ // 🔒 1：此处更推荐，因为性能不影响
-        MyConnection result = null;
-        for (MyConnection mc : pool) { // 循环找连接，因此循环次数耗费的时间微乎其微，因此没必要在循环内锁定。
+    private Connection getMC(){ // 🔒 1：此处更推荐，因为性能不影响
+        Connection result = null;
+        for (Connection conn : pool) { // 循环找连接，因此循环次数耗费的时间微乎其微，因此没必要在循环内锁定。
+            MyConnection mc = (MyConnection) conn; // 造型，夫类的引用指向子类对象
             if (mc.isUsed() == false) { // 连接可用
                 synchronized(this){ //  🔒 2 (1)占用之前先锁定连接池对象(锁内部需判断两次）
                     if(mc.isUsed() == false){ // 🔒 2 (2)再次判断
@@ -69,6 +71,29 @@ public class ConnectionPool {
             }
         }
             return result;
+    }
+
+
+    // 重新设计一个新的方法：用户等待机制
+    // 最终目的：获取连接
+    public Connection getConnection(){
+        Connection result = this.getMC();
+        int count = 0; // 记录循环次数（次数刚好能计算出时间）
+        while(result == null && count < waitTime*10){ // 执行太快，让其休眠一会儿，释放空间
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            result = this.getMC();
+            count++;
+        }
+        if(result == null){
+            // 超过了5秒钟，还是没有找到
+            // 自定义异常：系统繁忙，请稍后再试
+            throw new SystemBusyException("系统繁忙，请稍后重试。");
+        }
+        return result;
     }
 
 }
