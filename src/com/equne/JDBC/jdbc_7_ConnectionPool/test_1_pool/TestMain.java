@@ -1,7 +1,6 @@
-package com.equne.JDBC.jdbc_7_ConnectionPool.test;
+package com.equne.JDBC.jdbc_7_ConnectionPool.test_1_pool;
 
 import com.equne.JDBC.jdbc_7_ConnectionPool.pool.ConnectionPool;
-import com.equne.JDBC.jdbc_7_ConnectionPool.pool.MyConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
