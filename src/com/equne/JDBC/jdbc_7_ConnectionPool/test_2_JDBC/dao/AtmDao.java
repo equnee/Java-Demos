@@ -3,6 +3,7 @@ package com.equne.JDBC.jdbc_7_ConnectionPool.test_2_JDBC.dao;
 import com.equne.JDBC.jdbc_7_ConnectionPool.pool.ConnectionPool;
 import com.equne.JDBC.jdbc_7_ConnectionPool.test_2_JDBC.domain.Atm;
 import com.equne.JDBC.jdbc_7_ConnectionPool.test_2_JDBC.jdbc.JdbcUtil;
+import com.equne.JDBC.jdbc_7_ConnectionPool.test_2_JDBC.jdbc.Mapper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AtmDao {
 
@@ -43,12 +45,27 @@ public class AtmDao {
     }
 
     /**
-     *  多条查询
+     *  多条查询（匿名内部类 AtmMapper）
      */
     public void findAll(){
         String sql = "SELECT * FROM atm";
         JdbcUtil util = new JdbcUtil();
-        util.selectListMap(sql);
+        // 1. 直接输出：util.selectListMap(sql);
+        // 2. 使用 mapper 实现具体输出：（自己动手）
+//        List<Atm> atms = util.selectList(sql, new Mapper<Atm>() {
+//            @Override
+//            public Atm orm(Map<String, Object> row) {
+//                String aname = (String) row.get("ANAME");
+//                String apassword = (String) row.get("APASSWORD");
+//                Float alabance = (Float) row.get("ABALANCE");
+//                return new Atm(aname, apassword, alabance);
+//            }
+//        });
+        // 2.2: 让框架自己想办法实现具体输出。
+        List<Atm> atms = util.selectList(sql, Atm.class);
+        for(Atm atm: atms){
+            System.out.println(atm);
+        }
     }
 
     /**
@@ -60,4 +77,45 @@ public class AtmDao {
         JdbcUtil util = new JdbcUtil();
         util.selectMap(sql, aname);
     }
+
+    /**
+     *  查找总数（匿名内部类TotalMapper）
+     */
+    public void findTotal(){
+        String sql = "SELECT COUNT(*) total FROM atm";
+        JdbcUtil util = new JdbcUtil();
+//        long total = util.selectOne(sql, new Mapper<Long>() {
+//            @Override
+//            public Long orm(Map<String, Object> row) {
+//                return (Long) row.get("TOTAL");
+//            }
+//        });
+        long total = util.selectOne(sql, Long.class); // 我交给框架，让框架想办法组成Long
+        System.out.println(total);
+    }
+
+
+
+
+    /**
+     * 规则：实现查询结果组成Atm对象（实现接口） —— !! 可以使用匿名内部类代替。
+     */
+//    class AtmMapper implements Mapper<Atm>{
+//        @Override
+//        public Atm orm(Map<String, Object> row) {
+//            String aname = (String)row.get("ANAME");
+//            String apassword = (String)row.get("APASSWORD");
+//            Float abalance = (Float)row.get("ABALANCE");
+//            return new Atm(aname, apassword, abalance);
+//        }
+//    }
+
+
+//    class TotalMapper implements  Mapper<Long>{
+//        @Override
+//        public Long orm(Map<String, Object> row) {
+//            return (Long) row.get("TOTAL");
+//        }
+//    }
+
 }

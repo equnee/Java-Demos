@@ -6,7 +6,9 @@ public class TestMain {
     public static void main(String[] args){
         // new AtmDao().save();
         // new AtmDao().delete();
-        // new AtmDao().findAll();
-        new AtmDao().findById();
+        new AtmDao().findAll();
+        // new AtmDao().findById();
+        // new AtmDao().findTotal();
+        // new AtmDao().findTotal();
     }
 }

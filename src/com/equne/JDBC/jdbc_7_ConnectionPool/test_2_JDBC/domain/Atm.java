@@ -13,18 +13,21 @@ public class Atm {
     private String apassword;
     private Float abalance;
 
-//    @Override
-//    public String toString() {
-//        StringBuilder stringBuilder = new StringBuilder();
-//        stringBuilder.append("{ ");
-//        stringBuilder.append(aname);
-//        stringBuilder.append(", ");
-//        stringBuilder.append(apassword);
-//        stringBuilder.append(", ");
-//        stringBuilder.append(abalance);
-//        stringBuilder.append("}");
-//        return new String(stringBuilder);
-//    }
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("ATM [");
+        stringBuilder.append("aname:");
+        stringBuilder.append(aname);
+        stringBuilder.append(", ");
+        stringBuilder.append("apassword:");
+        stringBuilder.append(apassword);
+        stringBuilder.append(", ");
+        stringBuilder.append("abalance:");
+        stringBuilder.append(abalance);
+        stringBuilder.append("]");
+        return new String(stringBuilder);
+    }
 
     // 无参数构造方法
     public Atm() {}

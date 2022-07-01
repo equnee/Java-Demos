@@ -16,12 +16,13 @@ public class JdbcUtil {
     private int executeUpdate(String sql, Object...params){
         return (int) new JdbcUpdate().execute(sql, params);
     }
+
     // 实现查询
     private List<Map<String, Object>> executeQuery(String sql, Object...params){
         return (List<Map<String, Object>>) new JdbcQuery().execute(sql, params);
     }
 
-
+    // ------------------------------------------------------------------------------------
     /** 对外提供 */
     // 增
     public int insert(String sql, Object...params){
@@ -71,4 +72,64 @@ public class JdbcUtil {
         }
         throw new SqlFormatException("Not a select statement: [" + sql + "]");
     }
+
+    // ------------------------------------------------------------------------------------
+    /**
+     *  策略模式
+     */
+
+    // 查询所有记录，可以组成具体的对象 <策略模式>
+    public <T> List<T> selectList(String sql, Mapper<T> mapper, Object...params){
+        List<Map<String, Object>> rows = this.selectListMap(sql, params);
+        List<T> ts = new ArrayList<>();
+        for(Map<String, Object> row: rows){
+            T t = mapper.orm(row);
+            ts.add(t);
+        }
+        return ts;
+    }
+
+    // 查询单条记录
+    public <T> T selectOne(String sql, Mapper<T> mapper, Object...params){
+        Map<String, Object> row = this.selectMap(sql, params);
+        if(row==null) return null;
+        return mapper.orm(row);
+    }
+
+
+    // ------------------------------------------------------------------------------------
+    /** 反射：组装对象 */
+    /* 查询所有记录，组成具体对象（重载SelectList方法）
+       Class<T> type —— 指定组装的具体类型
+       - 通过反射组装对象    */
+    public <T> List<T> selectList(String sql, Class<T> type, Object...params){
+        try {
+            List<Map<String, Object>> rows = this.selectListMap(sql, params);
+            List<T> ts = new ArrayList<T>();
+            for (Map<String, Object> row : rows) {
+                // 自己想办法组装：反射
+                T t = ResultLoader.load(row, type);
+                ts.add(t);
+            }
+            return ts;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // 查询单条记录
+    public <T> T selectOne(String sql, Class<T> type, Object...params){
+        try{
+            Map<String, Object> row = this.selectMap(sql, params);
+            if(row==null) return null;
+            return ResultLoader.load(row, type);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+
 }

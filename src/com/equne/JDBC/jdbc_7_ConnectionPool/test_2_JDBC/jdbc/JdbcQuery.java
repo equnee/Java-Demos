@@ -30,7 +30,7 @@ public class JdbcQuery extends JdbcTemplate {
             results.add(map);
         }
 
-        System.out.println(results);
+        // System.out.println(results);
         return results;
     }
 }
