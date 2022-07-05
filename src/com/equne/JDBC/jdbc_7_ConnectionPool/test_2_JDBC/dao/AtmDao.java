@@ -2,8 +2,10 @@ package com.equne.JDBC.jdbc_7_ConnectionPool.test_2_JDBC.dao;
 
 import com.equne.JDBC.jdbc_7_ConnectionPool.pool.ConnectionPool;
 import com.equne.JDBC.jdbc_7_ConnectionPool.test_2_JDBC.domain.Atm;
+import com.equne.JDBC.jdbc_7_ConnectionPool.test_2_JDBC.jdbc.JdbcFront;
 import com.equne.JDBC.jdbc_7_ConnectionPool.test_2_JDBC.jdbc.JdbcUtil;
 import com.equne.JDBC.jdbc_7_ConnectionPool.test_2_JDBC.jdbc.Mapper;
+import jdk.nashorn.internal.scripts.JD;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,10 +21,13 @@ public class AtmDao {
      *  新增
      */
     public void save(){
-        Atm atm = new Atm("laosix", "666", 6000F);
-        String sql = "INSERT INTO atm values(?, ?, ?)";
-        JdbcUtil util = new JdbcUtil();
-        util.delete(sql, new Object[]{atm.getAname(), atm.getApassword(), atm.getAbalance()});
+        Atm atm = new Atm("laoseven", "777", 700F);
+        String sql = "INSERT INTO atm VALUES(#{aname}, #{apassword}, #{abalance})";
+//        String sql = "INSERT INTO atm values(?, ?, ?)";
+//        JdbcUtil util = new JdbcUtil();
+//        util.delete(sql, new Object[]{atm.getAname(), atm.getApassword(), atm.getAbalance()});
+        JdbcFront front = new JdbcFront();
+        front.insert(sql, atm);
     }
 
     /**
@@ -72,10 +77,11 @@ public class AtmDao {
      *  单条查询
      */
     public void findById(){
-        String sql = "SELECT * FROM atm WHERE aname = ?";
+        String sql = "SELECT * FROM atm WHERE aname = #{1}";
         String aname = "lisi";
-        JdbcUtil util = new JdbcUtil();
-        util.selectMap(sql, aname);
+        JdbcFront front = new JdbcFront();
+        Atm atm = front.selectOne(sql, Atm.class, aname);
+        System.out.println(atm);
     }
 
     /**
