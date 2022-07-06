@@ -1,19 +1,10 @@
 package com.equne.JDBC.jdbc_7_ConnectionPool.test_2_JDBC.dao;
 
-import com.equne.JDBC.jdbc_7_ConnectionPool.pool.ConnectionPool;
 import com.equne.JDBC.jdbc_7_ConnectionPool.test_2_JDBC.domain.Atm;
 import com.equne.JDBC.jdbc_7_ConnectionPool.test_2_JDBC.jdbc.JdbcFront;
 import com.equne.JDBC.jdbc_7_ConnectionPool.test_2_JDBC.jdbc.JdbcUtil;
-import com.equne.JDBC.jdbc_7_ConnectionPool.test_2_JDBC.jdbc.Mapper;
-import jdk.nashorn.internal.scripts.JD;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class AtmDao {
 
@@ -23,9 +14,6 @@ public class AtmDao {
     public void save(){
         Atm atm = new Atm("laoseven", "777", 700F);
         String sql = "INSERT INTO atm VALUES(#{aname}, #{apassword}, #{abalance})";
-//        String sql = "INSERT INTO atm values(?, ?, ?)";
-//        JdbcUtil util = new JdbcUtil();
-//        util.delete(sql, new Object[]{atm.getAname(), atm.getApassword(), atm.getAbalance()});
         JdbcFront front = new JdbcFront();
         front.insert(sql, atm);
     }
@@ -43,7 +31,6 @@ public class AtmDao {
     public void delete(){
         String aname = "laosix";
         String sql = "DELETE FROM atm WHERE aname = ?";
-
         JdbcUtil util = new JdbcUtil();
         util.delete(sql, aname);
 
